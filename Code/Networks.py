@@ -62,6 +62,7 @@ class CNN:
 
         else:
             info = ("\nConvolutional Neural Network Attributes\n-----------------------------------------\n"+\
+            "Input Shape:\t\t\t"+str(self.input_shape)+"\n"
             "Number of convolutional Layers:\t\t"+str(self.numConvLayers)+"\n"
             "Chanels:\t\t\t\t"+str(self.chanels)+"\n"+\
             "Kernel Size:\t\t\t\t"+str(self.kernel_array)+"\n"

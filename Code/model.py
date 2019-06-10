@@ -1,6 +1,6 @@
 
 #Classes Imports
-import data_manipulation as DM
+
 import visualize as visualize
 
 #Model Imports
@@ -46,10 +46,9 @@ log.write("Start:\n"+folder_name+"\n\n-----------------------------------------\
 
 class Model():
 
-    def __init__(self,ANN, CNN, data, labels, inputNumNodes, classes, randNumSeed,
-                 epochs, batchSize, optimizer, cost, desired_acc, one_hot=False):
-        global global_desired_acc
-        global_desired_acc = desired_acc
+    def __init__(self,ANN, CNN, data, labels, classes, randNumSeed,
+                 epochs, batchSize, optimizer, cost, one_hot=False):
+
         self.ANN = ANN
         self.CNN = CNN
 
@@ -57,13 +56,13 @@ class Model():
         self.data = data
         self.labels = labels
         self.classes = classes
-        self.inputNumNodes = inputNumNodes
+        self.inputNumNodes = None
 
         self.x = None
         self.y = None
-        self.one_hot = one_hot
         self.outputLayer = None
 
+        self.one_hot = one_hot
         self.epochs = epochs
         self.batchSize = batchSize
         self.randNumSeed = randNumSeed
@@ -71,8 +70,7 @@ class Model():
         self.optimizer = optimizer
         self.cost = cost
 
-        self.Desired_Acc = desired_acc
-        self.Desired_Comp_Cost = None
+
 
 
 
@@ -86,8 +84,6 @@ class Model():
                 "Random Number Seed:\t\t"+str(self.randNumSeed)+"\n"+\
                 "Optimizer:\t\t\t"+str(self.optimizer)+"\n"+\
                 "Cost:\t\t\t\t"+str(self.cost)+"\n"+\
-                "Desired Accuracy:\t\t"+str(self.Desired_Acc)+"\n"+\
-                "Desired Computation Cost:\t"+str(self.Desired_Comp_Cost)+\
                 "\n-----------------------------------------"
         return info
 
@@ -112,35 +108,42 @@ class Model():
         preLayer = self.x
 
         self.model = models.Sequential()
-        if self.CNN.used == True:
-            firstPass = True
-            idx = 0
-            for idx in range(self.CNN.numConvLayers):
-                if firstPass == True:
-                    print("Creating convolutional Layers")
-                    log.write("Creating Convolutional Layers\n")
-                    self.model.add(Conv2D(self.CNN.chanels[idx],
-                        kernel_size=self.CNN.kernel_array[idx],
-                        strides=self.CNN.strides_array[idx],
-                        activation=self.CNN.activationFunction,
-                        input_shape=self.CNN.input_shape))
 
-                    self.model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-                    firstPass = False
-                else:
-                    self.model.add(Conv2D(self.CNN.chanels[idx],
-                        kernel_size=self.CNN.kernel_array[idx],
-                        strides=self.CNN.strides_array[idx],
-                        activation=self.CNN.activationFunction))
+        try:
+            if self.CNN.used == True:
+                firstPass = True
+                idx = 0
+                for idx in range(self.CNN.numConvLayers):
+                    if firstPass == True:
+                        print("Creating convolutional Layers")
+                        log.write("Creating Convolutional Layers\n")
+                        self.model.add(Conv2D(self.CNN.chanels[idx],
+                            kernel_size=self.CNN.kernel_array[idx],
+                            strides=self.CNN.strides_array[idx],
+                            activation=self.CNN.activationFunction[idx],
+                            input_shape=self.CNN.input_shape))
+
+                        self.model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+                        firstPass = False
+                    else:
+                        self.model.add(Conv2D(self.CNN.chanels[idx],
+                            kernel_size=self.CNN.kernel_array[idx],
+                            strides=self.CNN.strides_array[idx],
+                            activation=self.CNN.activationFunction[idx]))
+        except:
+            log.write("\n\nConvolutional Layer is not possible\n\n")
+            return False
+
         self.model.add(Flatten())
 
         idx = 0
         print("Creating Dense Layers")
         log.write("Creating Dense Layers\n")
         for idx in range(self.ANN.numHiddenLayers):
+            print(idx)
             layerOutputSize = self.ANN.numNodes[idx]
 
-            self.model.add(layers.Dense(layerOutputSize, activation=self.ANN.activationFunction))
+            self.model.add(layers.Dense(layerOutputSize, activation=self.ANN.activationFunction[idx]))
             self.model.add(Dropout(self.ANN.dropout_rate))
             """
                 Add Modularity to individualize activation function for each layer
