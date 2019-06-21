@@ -46,8 +46,8 @@ log.write("Start:\n"+folder_name+"\n\n-----------------------------------------\
 
 class Model():
 
-    def __init__(self,ANN, CNN, data, labels, classes, randNumSeed,
-                 epochs, batchSize, optimizer, cost, one_hot=False):
+    def __init__(self, data, labels, classes, randNumSeed,
+                 epochs, batchSize, optimizer, cost, ANN, CNN=False, one_hot=False):
 
         self.ANN = ANN
         self.CNN = CNN
@@ -75,22 +75,39 @@ class Model():
 
 
     def get_info(self):
-        info = "\nModel Attributes\n-----------------------------------------\n"+\
-                "Artificial Neural Network:\t"+str(self.ANN.used)+"\n"+\
-                "Convolution Neural Network:\t"+str(self.CNN.used)+"\n"+\
-                "Input Node Number:\t\t"+str(self.inputNumNodes)+"\n"+\
-                "Epoches:\t\t\t"+str(self.epochs)+"\n"+\
-                "Batch Size:\t\t\t"+str(self.batchSize)+"\n"+\
-                "Random Number Seed:\t\t"+str(self.randNumSeed)+"\n"+\
-                "Optimizer:\t\t\t"+str(self.optimizer)+"\n"+\
-                "Cost:\t\t\t\t"+str(self.cost)+"\n"+\
-                "\n-----------------------------------------"
+        if self.CNN == False:
+            info = "\nModel Attributes\n-----------------------------------------\n"+\
+                    "Artificial Neural Network:\t"+str(self.ANN.used)+"\n"+\
+                    "Input Node Number:\t\t"+str(self.inputNumNodes)+"\n"+\
+                    "Epoches:\t\t\t"+str(self.epochs)+"\n"+\
+                    "Batch Size:\t\t\t"+str(self.batchSize)+"\n"+\
+                    "Random Number Seed:\t\t"+str(self.randNumSeed)+"\n"+\
+                    "Optimizer:\t\t\t"+str(self.optimizer)+"\n"+\
+                    "Cost:\t\t\t\t"+str(self.cost)+"\n"+\
+                    "\n-----------------------------------------"
+        else:
+            info = "\nModel Attributes\n-----------------------------------------\n"+\
+                    "Artificial Neural Network:\t"+str(self.ANN.used)+"\n"+\
+                    "Convolution Neural Network:\t"+str(self.CNN.used)+"\n"+\
+                    "Input Node Number:\t\t"+str(self.inputNumNodes)+"\n"+\
+                    "Epoches:\t\t\t"+str(self.epochs)+"\n"+\
+                    "Batch Size:\t\t\t"+str(self.batchSize)+"\n"+\
+                    "Random Number Seed:\t\t"+str(self.randNumSeed)+"\n"+\
+                    "Optimizer:\t\t\t"+str(self.optimizer)+"\n"+\
+                    "Cost:\t\t\t\t"+str(self.cost)+"\n"+\
+                    "\n-----------------------------------------"
         return info
 
     def log_architecture(self):
         log.write(self.ANN.get_info()+"\n")
-        log.write(self.CNN.get_info()+"\n")
+        print(self.ANN.get_info()+"\n")
+        if self.CNN == False:
+            pass
+        else:
+            log.write(self.CNN.get_info()+"\n")
+            print(self.CNN.get_info()+"\n")
         log.write(self.get_info()+"\n")
+        print(self.get_info()+"\n")
 
     def create_architecture(self):
         self.log_architecture()
@@ -109,30 +126,34 @@ class Model():
 
         self.model = models.Sequential()
 
-        try:
-            if self.CNN.used == True:
-                firstPass = True
-                idx = 0
-                for idx in range(self.CNN.numConvLayers):
-                    if firstPass == True:
-                        print("Creating convolutional Layers")
-                        log.write("Creating Convolutional Layers\n")
-                        self.model.add(Conv2D(self.CNN.chanels[idx],
-                            kernel_size=self.CNN.kernel_array[idx],
-                            strides=self.CNN.strides_array[idx],
-                            activation=self.CNN.activationFunction[idx],
-                            input_shape=self.CNN.input_shape))
+        if self.CNN == False:
+            print("FALSE")
+            pass
+        else:
+            try:
+                if (self.CNN.used == True):
+                    firstPass = True
+                    idx = 0
+                    for idx in range(self.CNN.numConvLayers):
+                        if firstPass == True:
+                            print("Creating convolutional Layers")
+                            log.write("Creating Convolutional Layers\n")
+                            self.model.add(Conv2D(self.CNN.chanels[idx],
+                                kernel_size=self.CNN.kernel_array[idx],
+                                strides=self.CNN.strides_array[idx],
+                                activation=self.CNN.activationFunction[idx],
+                                input_shape=self.CNN.input_shape))
 
-                        self.model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-                        firstPass = False
-                    else:
-                        self.model.add(Conv2D(self.CNN.chanels[idx],
-                            kernel_size=self.CNN.kernel_array[idx],
-                            strides=self.CNN.strides_array[idx],
-                            activation=self.CNN.activationFunction[idx]))
-        except:
-            log.write("\n\nConvolutional Layer is not possible\n\n")
-            return False
+                            self.model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+                            firstPass = False
+                        else:
+                            self.model.add(Conv2D(self.CNN.chanels[idx],
+                                kernel_size=self.CNN.kernel_array[idx],
+                                strides=self.CNN.strides_array[idx],
+                                activation=self.CNN.activationFunction[idx]))
+            except:
+                return False
+
 
         self.model.add(Flatten())
 
@@ -140,7 +161,6 @@ class Model():
         print("Creating Dense Layers")
         log.write("Creating Dense Layers\n")
         for idx in range(self.ANN.numHiddenLayers):
-            print(idx)
             layerOutputSize = self.ANN.numNodes[idx]
 
             self.model.add(layers.Dense(layerOutputSize, activation=self.ANN.activationFunction[idx]))
@@ -150,17 +170,16 @@ class Model():
                     and/or each node
             """
 
-
         self.model.compile(optimizer=self.optimizer,
-              loss=self.cost,#The cost function might be casuing the error !!!!
+              loss=self.cost,
               metrics=['accuracy'])
         print("Neural Network Model is created!")
         log.write("Neural Network Model is created!\n")
-        return None
+        return True
 
 
 
-    def train(self, val_split = None):
+    def train(self, val_split = 0.2):
         #To view tensorboard use
         # tensorboard --logdir=/full_path_to_your_logs --host=127.0.0.1
         tensorboard = TensorBoard(log_dir=folder_name+'graph', histogram_freq=1,
@@ -175,13 +194,9 @@ class Model():
         start = time.time()
         start_hours, rem = divmod(start, 3600)
         start_minutes, start_seconds = divmod(rem, 60)
-
-        history = self.model.fit(self.data, self.labels,
-                    batch_size=self.batchSize,
-                    epochs=self.epochs,
-                    validation_split = val_split,
-                    callbacks=callbacks,
-                    verbose=0)
+        #print("Data shape")
+        #print(self.data.shape)
+        history = self.model.fit(self.data, self.labels,batch_size=self.batchSize,epochs=self.epochs,validation_split = val_split,callbacks=callbacks,verbose=0)
 
         end = time.time()
         print("Training Completed")
