@@ -37,3 +37,5 @@ class Progeny():
             if newGene == childGenes[index] \
             else newGene
         return ''.join(childGenes)
+
+    #def population 
