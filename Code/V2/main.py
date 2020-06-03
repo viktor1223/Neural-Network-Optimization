@@ -5,22 +5,17 @@ import Networks
 from keras.datasets import cifar10
 from keras.utils.np_utils import to_categorical
 
-import datetime
-import os
-
-
-file_name = "LOG.csv"
 
 #Global Variables
-POPULATION_SIZE = 20 #zeo index
+POPULATION_SIZE = 10 #zeo index
 
 GENE_SET = '10'
-MUTATION_CHANCE = 0.6
+MUTATION_CHANCE = 0.2
 CROSSOVER_CHANCE = 0.45
-KEEP = 0.4
-ACC_TOL = 0.90
-MAX_NUM_NODES = int(TOOLS.max_bi(len(TOOLS.int_to_bit(100))), 2)
-MAX_NUM_HIDDEN_LAYERS = int(TOOLS.max_bi(len(TOOLS.int_to_bit(20))), 2)
+KEEP = 0.2
+maxGen = 5
+MAX_NUM_NODES = int(TOOLS.max_bi(len(TOOLS.int_to_bit(50))), 2)
+MAX_NUM_HIDDEN_LAYERS = int(TOOLS.max_bi(len(TOOLS.int_to_bit(10))), 2)
 TOOLS.global_variables([ 'sigmoid', 'tanh', 'relu', 'elu'],
                         [.1, .01, .001, .0001, .00001, .000001, .0000001, .00000001],
                         [0, .1, .2, .3, .4, .5, .6, .7])
@@ -77,27 +72,21 @@ def main():
 
     graph_list = []
     acc, best_acc, counter = 0, 0, 0
-    while acc < ACC_TOL:
-
-        if counter == 1000:
-            break
-        #end if
-
+    while counter < maxGen:
         #train/calc fitness of population
         print("Counter:\t", counter)
-        print("Best Acc:\t", best_acc*100, "%")
+        print("Best Acc:\t", best_acc)
         network_list = []
         for i in range(len(population)):
             network = train(population[i], input_shape, classes, x_train, x_test, y_train, y_test, batch_size)
             network_list.append(network)
 
         #evolve
-        population, acc = ga.Offspring(network_list)
+        population, best_acc = ga.Offspring(network_list)
 
         if acc > best_acc:
             best_acc = acc
             graph_list.append([best_acc, counter])
-            TOOLS.csv_log(file_name, counter, best_acc)
         counter += 1
 
     #print/log most fit model

@@ -35,6 +35,17 @@ class Progeny():
         return ''.join(genes)
 
     def mutate(self, parent):
+<<<<<<< HEAD:Code/V1/genetic_algorithm.py
+        index = random.randrange(0, len(parent))
+        childGenes = list(parent)
+        newGene, alternate = random.sample(self.geneSet, 2)
+        childGenes[index] = alternate \
+            if newGene == childGenes[index] \
+            else newGene
+        return ''.join(childGenes)
+
+    #def population 
+=======
 
         newGene = ''
         for i in range(len(parent)):
@@ -159,3 +170,4 @@ class Progeny():
 
         #print(graded_best)
         return graded_best, best_acc
+>>>>>>> master:Code/genetic_algorithm.py
