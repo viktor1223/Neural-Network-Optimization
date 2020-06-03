@@ -13,7 +13,7 @@ GENE_SET = '10'
 MUTATION_CHANCE = 0.2
 CROSSOVER_CHANCE = 0.45
 KEEP = 0.2
-ACC_TOL = 0.95
+maxGen = 5
 MAX_NUM_NODES = int(TOOLS.max_bi(len(TOOLS.int_to_bit(50))), 2)
 MAX_NUM_HIDDEN_LAYERS = int(TOOLS.max_bi(len(TOOLS.int_to_bit(10))), 2)
 TOOLS.global_variables([ 'sigmoid', 'tanh', 'relu', 'elu'],
@@ -72,7 +72,7 @@ def main():
 
     graph_list = []
     acc, best_acc, counter = 0, 0, 0
-    while acc < ACC_TOL:
+    while counter < maxGen:
         #train/calc fitness of population
         print("Counter:\t", counter)
         print("Best Acc:\t", best_acc)
