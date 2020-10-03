@@ -32,6 +32,9 @@ The repository will output a accuracy per generation graph and a Jason file of t
 
 ## Flow chart
 
+
+![NNOGA_Flow_Cart](https://github.com/viktor1223/Neural-Network-Optimization/blob/master/Figures/NNOGA_Flow_Chart.jpg?raw=true)
+
 # Usage
 
 The following lines of code in main.py can be changed to increase performance
