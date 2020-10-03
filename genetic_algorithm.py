@@ -26,8 +26,10 @@ class Progeny():
         self.mutation = mutation
         self.crossover_chance = crossover
         self.keep_rate = keep
+        self.length = None
 
     def generate_parent(self, length):
+        self.length = length
         genes = []
         while(len(genes)<length):
             sampleSize=min(length-len(genes), len(self.geneSet))
@@ -35,17 +37,6 @@ class Progeny():
         return ''.join(genes)
 
     def mutate(self, parent):
-<<<<<<< HEAD:Code/V1/genetic_algorithm.py
-        index = random.randrange(0, len(parent))
-        childGenes = list(parent)
-        newGene, alternate = random.sample(self.geneSet, 2)
-        childGenes[index] = alternate \
-            if newGene == childGenes[index] \
-            else newGene
-        return ''.join(childGenes)
-
-    #def population 
-=======
 
         newGene = ''
         for i in range(len(parent)):
@@ -59,15 +50,19 @@ class Progeny():
 
     def crossover(self, father, mother):
 
-        netwrok_bit_size = len(father)
+        #netwrok_bit_size = len(father)
         #print(netwrok_bit_size)
         #print(mother)
-        #print("Mother Len", len(mother))
+        print("\n\n------------------------------------------------\n")
+        print("Mother Len", len(mother))
         #print(father)
-        #print("Father len", len(father))
+        print("Father len", len(father))
+        print("OG len", self.length)
+        
         baby = ''
         i = 0
-        while len(baby) <= netwrok_bit_size:
+        #Uniform Crossover operation between both parents 
+        while len(baby) < self.length:
 
             probability = random.uniform(0,1)
             if  probability < self.crossover_chance:
@@ -77,13 +72,17 @@ class Progeny():
                 baby += (mother[i])
                 i += 1
             else:
+                #mutation Probability
                 gene = [random.randint(0, 1)]
-                mutated_gene = (self.mutate(gene))
-                baby += (mutated_gene)
+                mutatedProbability = random.uniform(0,1) 
+                if mutatedProbability > self.mutation:
+                    mutated_gene = (self.mutate(gene))
+                    baby += (mutated_gene)
+                else:
+                    baby += (gene)
 
-
-
-
+        print("Baby len", len(baby))
+        print("\n\n------------------------------------------------\n")
 
         return baby
 
@@ -99,7 +98,7 @@ class Progeny():
     @staticmethod
     def fitness(network):
         """Return the accuracy, which is our fitness function."""
-        return network.accuracy
+        return network.f1
 
     def Offspring(self, population):
 
@@ -108,7 +107,7 @@ class Progeny():
         #sort by most accurate to least
         graded = sorted(population, key=itemgetter(1), reverse=True)
 
-
+       
         best_acc = graded[0][1]
 
 
@@ -170,4 +169,3 @@ class Progeny():
 
         #print(graded_best)
         return graded_best, best_acc
->>>>>>> master:Code/genetic_algorithm.py

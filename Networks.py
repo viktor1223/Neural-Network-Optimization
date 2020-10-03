@@ -8,15 +8,30 @@ from keras.callbacks import EarlyStopping
 from keras.callbacks import TensorBoard
 import keras.backend as k_backend
 
+from sklearn.metrics import f1_score, precision_score, recall_score, confusion_matrix
+
+import numpy as np
+
 import time
 
 class Model():
 
     def __init__(self):
+        """
+        inint model object. Each model in the population will be there own objects
+        """
         self.accuracy = None
+        self.f1 = None              #Notes used yet
+        self.precision = None       #Notes used yet
+        self.recall = None          #Notes used yet
 
     def create_architecture(self, num_hidden_layers, num_nodes_per_layer, activation_function_per_layer, dropout_rate, input_shape, optimizer, cost):
-        #self.log_architecture()
+        """
+        Create model architecture based on passed inputs 
+
+        return 
+        model       keras model 
+        """
 
 
 
@@ -54,13 +69,14 @@ class Model():
         return model
 
     def train(self, model, x_train, x_test, y_train, y_test, batch_size, epochs, val_split=0.2):
+        """
+        Train and evaluate model based on training and test data 
 
-        #To view tensorboard use
-        # tensorboard --logdir=/full_path_to_your_logs --host=127.0.0.1
-        #tensorboard = TensorBoard(log_dir=folder_name+'graph', histogram_freq=1,
-        #                          write_graph=True, write_images=False)
-        #tensorboard.set_model(self.model)
-        es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=5)
+        return 
+        acc     float   accuracy of models perfomance of test set 
+        """
+      
+        es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=5) #avoid over fitting model 
 
         callbacks = [es]
 
@@ -72,7 +88,7 @@ class Model():
         #print("Data shape")
         #print(self.data.shape)
 
-
+        #train the model and save training/val loss and acc scores 
         history = model.fit(x_train,
                             y_train,
                             batch_size=batch_size,
@@ -97,9 +113,10 @@ class Model():
 
         model.summary()
 
+        #evaluate models performance of test set 
         score = model.evaluate(x_test, y_test) #[test_loss, test_acc]
 
-
+        #Parse training/validation  loss and accuracy 
         loss = history.history['loss']
         accuracy = history.history['acc']
         val_loss = history.history['val_loss']
@@ -113,6 +130,9 @@ class Model():
 
         #print(training_info)
 
+       
+        #save acc score to model object for future reference 
         self.accuracy = score[1]
-
+        
+        #return model acc score 
         return score[1]
