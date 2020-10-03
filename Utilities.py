@@ -1,23 +1,26 @@
-<<<<<<< HEAD:Code/V2/Utilities.py
-=======
+
 import csv
 
 
 def global_variables(af_array, lr_array, dr_array):
+    """
+    Initalize global variables
+    """
     global activation_function_array
     global learning_rate_array
     global dropout_rate_array
     activation_function_array = af_array
     learning_rate_array = lr_array
     dropout_rate_array = dr_array
->>>>>>> master:Code/Utilities.py
 
 def csv_log(file_name, counter, max_acc):
+    """
+    CSV log to keep track of geneartion and best accuracy 
+    """
     temp = open(file_name)
     with open(file_name, mode="a+")as file:
         writter = csv.writer(file, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-
-<<<<<<< HEAD:Code/V2/Utilities.py
+"""
 def global_variables(af_array, lr_array, dr_array):
     global activation_function_array
     global learning_rate_array
@@ -25,14 +28,17 @@ def global_variables(af_array, lr_array, dr_array):
     activation_function_array = af_array
     learning_rate_array = lr_array
     dropout_rate_array = dr_array
-=======
-        writter.writerow([str(counter), str(max_acc)])
->>>>>>> master:Code/Utilities.py
+"""
 
-    temp.close()
+    #temp.close()
 
     
 def int_to_bit(i):
+    """
+    Convert and int to a bit
+    return 
+    s       String of binary 1/0 values 
+    """
     if i == 0:
         return "0"
     s = ''
@@ -45,6 +51,12 @@ def int_to_bit(i):
     return s
 
 def max_bi(binary):
+    """
+    calculates the max unsigned binary value 
+
+    returns 
+    s           string of all binary 1 for the length of the original binary value 
+    """
     s = ''
     for i in range(binary):
         s = '1' + s
@@ -52,6 +64,9 @@ def max_bi(binary):
 
 def ANN_bit(num, max_num_nodes):
     """
+    Convert the user int values in to binary string denoting the ANN model as a chromosome
+
+    Segmentation of binary chromosome 
     Parameters                      number of bits
     used                            1
     num_hidden_layers               num
@@ -59,6 +74,9 @@ def ANN_bit(num, max_num_nodes):
     learning_rate                   len(learning_rate)
     activationFunction_per_layer    len(activation_function)
     dropout_rate                    len(dropout_rate)
+
+    Return 
+    Parameter       String of binary 1/0 
     """
     used = '1' #The ANN layer will ALWAYS be used!
     #str(random.randint(0,1))
@@ -88,6 +106,9 @@ def ANN_bit(num, max_num_nodes):
 
 def ANN_bit_to_model(bit, max_num_hidden_layers, max_num_nodes, output_layer):
     """
+    Convert binary chromosome into invalues for keras ANN model parametners 
+
+    Segmentation of binary chromosome 
     Parameters                      starting Bit point                                                                              Ending Bit Point
     used                            0                                                                                               0
     num_hidden_layers               1                                                                                               max_num_hidden_layers
@@ -95,6 +116,15 @@ def ANN_bit_to_model(bit, max_num_hidden_layers, max_num_nodes, output_layer):
     learning_rate                   max_num_nodes * max_num_hidden_layers + 1                                                       len(learning_rate) * max_num_nodes * max_num_hidden_layers
     activationFunction_per_layer    len(learning_rate) * max_num_nodes * max_num_hidden_layers + 1                                  len(activation_function) * len(learning_rate) * max_num_nodes * max_num_hidden_layers
     dropout_rate                    len(activation_function) * len(learning_rate) * max_num_nodes * max_num_hidden_layers + 1       len(dropout_rate) * len(activation_function) * len(learning_rate) * max_num_nodes * max_num_hidden_layers
+    
+    Return 
+    num_hidden_layers               int             Number of hidden layers for the model  
+    num_nodes_per_layer             int array       Number of nodes per each layer 
+    learning_rate                   float           learning rate for model 
+    activation_function_per_layer   str array       Activation function per each layer 
+    dropout_rate                    float           Drop out rate
+    used                            int const       For futrue use cases to add CNN 
+
     """
     used = 1
     #print(used)
@@ -131,13 +161,7 @@ def ANN_bit_to_model(bit, max_num_hidden_layers, max_num_nodes, output_layer):
         if num_nodes_per_layer[i] == 0:
             #print(num_nodes_per_layer[i])
             num_nodes_per_layer[i] = 1
-<<<<<<< HEAD:Code/V2/Utilities.py
 
-
-=======
-
-
->>>>>>> master:Code/Utilities.py
     if num_hidden_layers == 1:
         num_nodes_per_layer[0] = output_layer
     else:
