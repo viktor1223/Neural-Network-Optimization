@@ -79,7 +79,7 @@ class Progeny():
                     mutated_gene = (self.mutate(gene))
                     baby += (mutated_gene)
                 else:
-                    baby += (gene)
+                    baby += str(gene)
 
         print("Baby len", len(baby))
         print("\n\n------------------------------------------------\n")
