@@ -66,21 +66,34 @@ class Progeny():
 
             probability = random.uniform(0,1)
             if  probability < self.crossover_chance:
-                baby += (father[i])
-                i += 1
+                if father[i] == 1 or father[i] == 0:
+                    print("adding FATHER gene")
+                    baby += (father[i])
+                    i += 1
             elif probability < (2*self.crossover_chance):
-                baby += (mother[i])
-                i += 1
+                if mother[i] == 1 or mother[i] == 0:
+                    print("adding MOTHER gene")
+                    baby += (mother[i])
+                    i += 1
             else:
                 #mutation Probability
                 gene = [random.randint(0, 1)]
                 mutatedProbability = random.uniform(0,1) 
                 if mutatedProbability > self.mutation:
                     mutated_gene = (self.mutate(gene))
-                    baby += (mutated_gene)
+                    if mutated_gene == 1 or mutated_gene ==0:
+                        print("MUTATING a gene")
+                        baby += (mutated_gene)
+                        i += 1
                 else:
-                    baby += (gene)
+                    if gene[0] == 1 or gene[0] == 0: 
+                        print("adding RANDOM gene")
+                        baby += str(gene[0])
+                        i += 1
+            print("BABY GENOME")
+            print(baby)
 
+ 
         print("Baby len", len(baby))
         print("\n\n------------------------------------------------\n")
 
@@ -95,7 +108,7 @@ class Progeny():
 
         return pop
 
-    @staticmethod
+
     def fitness(network):
         """Return the accuracy, which is our fitness function."""
         return network.f1

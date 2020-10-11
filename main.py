@@ -19,11 +19,11 @@ TOOLS.global_variables([ 'sigmoid', 'tanh', 'relu', 'elu'],                     
                         [.1, .01, .001, .0001, .00001, .000001, .0000001, .00000001],   #Learning Rate
                         [0, .1, .2, .3, .4, .5, .6, .7])                                #Dropout Rate
 #Change for increased performance 
-POPULATION_SIZE = 50        #zeo index
+POPULATION_SIZE = 10        #zeo index
 MUTATION_CHANCE = 0.2       #Chance of randomly tweaking the models chromosome
 CROSSOVER_CHANCE = 0.45     #Chance for uniform crossover between two parents to occure
 KEEP = 0.4                  #Keep the top X percent of the population 
-maxGen = 2000               #Number of generations
+maxGen = 10              #Number of generations
 
 
  
